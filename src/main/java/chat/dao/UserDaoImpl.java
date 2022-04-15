@@ -4,8 +4,11 @@ import chat.exception.DataProcessingException;
 import chat.lib.Dao;
 import chat.model.User;
 import chat.util.ConnectionUtil;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Optional;
 
 @Dao
@@ -14,8 +17,8 @@ public class UserDaoImpl implements UserDao {
     public User create(User user) {
         String query = "INSERT INTO users (name) VALUES (?);";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query,
-                     Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement statement = connection.prepareStatement(query,
+                        Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, user.getName());
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
@@ -24,7 +27,8 @@ public class UserDaoImpl implements UserDao {
             }
             return user;
         } catch (SQLException e) {
-            throw new DataProcessingException("Couldn't create user with name: " + user.getName(), e);
+            throw new DataProcessingException("Couldn't create user with name: "
+                    + user.getName(), e);
         }
     }
 
@@ -32,7 +36,7 @@ public class UserDaoImpl implements UserDao {
     public Optional<User> findByName(String name) {
         String query = "SELECT * FROM users WHERE name = ?;";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+                PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
             User user = null;
@@ -48,7 +52,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Optional<User> get(Long id) {
         String query = "SELECT * FROM users WHERE id = ?;";
-        try (Connection connection = ConnectionUtil.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = ConnectionUtil.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             User user = null;

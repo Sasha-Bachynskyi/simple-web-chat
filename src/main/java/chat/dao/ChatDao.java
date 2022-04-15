@@ -2,7 +2,6 @@ package chat.dao;
 
 import chat.model.Chat;
 import chat.model.User;
-
 import java.util.List;
 import java.util.Optional;
 

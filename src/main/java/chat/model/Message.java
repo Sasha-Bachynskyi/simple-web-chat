@@ -1,7 +1,5 @@
 package chat.model;
 
-import java.time.LocalDateTime;
-
 public class Message {
     private Long id;
     private String content;
@@ -33,10 +31,9 @@ public class Message {
 
     @Override
     public String toString() {
-        return "Message{" +
-                "id=" + id +
-                ", content='" + content + '\'' +
-                ", user=" + user +
-                '}';
+        return "Message{" + "id=" + id
+                + ", content='" + content
+                + '\'' + ", user="
+                + user + '}';
     }
 }

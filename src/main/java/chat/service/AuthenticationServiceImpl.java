@@ -5,7 +5,6 @@ import chat.exception.AuthenticationException;
 import chat.lib.Inject;
 import chat.lib.Service;
 import chat.model.User;
-
 import java.util.Optional;
 
 @Service

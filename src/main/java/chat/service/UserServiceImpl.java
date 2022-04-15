@@ -5,8 +5,6 @@ import chat.lib.Inject;
 import chat.lib.Service;
 import chat.model.User;
 
-import java.util.Optional;
-
 @Service
 public class UserServiceImpl implements UserService {
     @Inject
@@ -19,6 +17,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User get(Long id) {
-        return userDao.get(id).orElseThrow(() -> new RuntimeException("There is no user in DB by such id: " + id));
+        return userDao.get(id).orElseThrow(
+                () -> new RuntimeException("There is no user in DB by such id: " + id));
     }
 }

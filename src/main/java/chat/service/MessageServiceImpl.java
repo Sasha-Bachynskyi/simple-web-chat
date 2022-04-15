@@ -4,7 +4,6 @@ import chat.dao.MessageDao;
 import chat.lib.Inject;
 import chat.lib.Service;
 import chat.model.Message;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -20,8 +19,8 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<Message> getLastTenMessages() {
-        List<Message> lastFiftyMessages = messageDao.getLastTenMessages();
-        Collections.reverse(lastFiftyMessages);
-        return lastFiftyMessages;
+        List<Message> lastTenMessages = messageDao.getLastTenMessages();
+        Collections.reverse(lastTenMessages);
+        return lastTenMessages;
     }
 }

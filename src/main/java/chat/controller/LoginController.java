@@ -5,14 +5,12 @@ import chat.lib.Injector;
 import chat.model.User;
 import chat.service.AuthenticationService;
 import chat.service.UserService;
-
+import java.io.IOException;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 
 public class LoginController extends HttpServlet {
     public static final Injector injector = Injector.getInstance("chat");

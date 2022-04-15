@@ -2,7 +2,6 @@ package chat.service;
 
 import chat.model.Chat;
 import chat.model.User;
-
 import java.util.List;
 
 public interface ChatService {

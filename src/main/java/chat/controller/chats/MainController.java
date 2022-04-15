@@ -7,21 +7,21 @@ import chat.model.User;
 import chat.service.ChatService;
 import chat.service.MessageService;
 import chat.service.UserService;
-
+import java.io.IOException;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.List;
 
 public class MainController extends HttpServlet {
     public static final Injector injector = Injector.getInstance("chat");
     public static final Long MAIN_CHAT_ID = 1L;
     private final UserService userService = (UserService) injector.getInstance(UserService.class);
     private final ChatService chatService = (ChatService) injector.getInstance(ChatService.class);
-    private final MessageService messageService = (MessageService) injector.getInstance(MessageService.class);
+    private final MessageService messageService =
+            (MessageService) injector.getInstance(MessageService.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -43,7 +43,7 @@ public class MainController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+            throws IOException {
         String content = req.getParameter("content");
         Message message = new Message();
         message.setContent(content);

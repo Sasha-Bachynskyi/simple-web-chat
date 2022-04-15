@@ -5,9 +5,10 @@ import chat.lib.Dao;
 import chat.model.Chat;
 import chat.model.User;
 import chat.util.ConnectionUtil;
-
-import java.net.ConnectException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +20,7 @@ public class ChatDaoImpl implements ChatDao {
         String query = "SELECT * FROM chats";
         List<Chat> chats = new ArrayList<>();
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+                PreparedStatement statement = connection.prepareStatement(query)) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 chats.add(parseChatFromResultSet(resultSet));
@@ -33,12 +34,14 @@ public class ChatDaoImpl implements ChatDao {
     @Override
     public Chat update(Chat chat) {
         String query = "UPDATE chats c SET type = ? WHERE id = ?;";
-        try (Connection connection = ConnectionUtil.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = ConnectionUtil.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, chat.getType());
             statement.setLong(2, chat.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new DataProcessingException("Couldn't update chat in DB. Chat: " + chat.getType(), e);
+            throw new DataProcessingException("Couldn't update chat in DB. Chat: "
+                    + chat.getType(), e);
         }
         deleteAllRelationsBetweenChatAndUsers(chat);
         insertUsers(chat);
@@ -50,7 +53,7 @@ public class ChatDaoImpl implements ChatDao {
         String query = "SELECT * FROM chats where id = ?;";
         Chat chat = null;
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+                PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -73,7 +76,8 @@ public class ChatDaoImpl implements ChatDao {
     @Override
     public boolean isUserPresent(Chat chat, User user) {
         String query = "SELECT * FROM users_chats WHERE user_id = ? AND chat_id = ?;";
-        try (Connection connection = ConnectionUtil.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = ConnectionUtil.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, user.getId());
             statement.setLong(2, chat.getId());
             ResultSet resultSet = statement.executeQuery();
@@ -84,8 +88,10 @@ public class ChatDaoImpl implements ChatDao {
     }
 
     private List<User> getUsersForChat(Long chatId) {
-        String query = "SELECT u.id as user_id, u.name as user_name FROM users u JOIN users_chats uc ON u.id = uc.user_id where uc.chat_id = ?;";
-        try (Connection connection = ConnectionUtil.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+        String query = "SELECT u.id as user_id, u.name as user_name FROM users"
+                + " u JOIN users_chats uc ON u.id = uc.user_id where uc.chat_id = ?;";
+        try (Connection connection = ConnectionUtil.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, chatId);
             ResultSet resultSet = statement.executeQuery();
             List<User> users = new ArrayList<>();
@@ -108,24 +114,27 @@ public class ChatDaoImpl implements ChatDao {
     private void insertUsers(Chat chat) {
         String query = "INSERT INTO users_chats (user_id, chat_id) VALUES (?, ?);";
         try (Connection connection = ConnectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+                PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(2, chat.getId());
             for (User user : chat.getUsers()) {
                 statement.setLong(1, user.getId());
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new DataProcessingException("Couldn't insert users to chat. Chat: " + chat.getType(), e);
+            throw new DataProcessingException("Couldn't insert users to chat. Chat: "
+                    + chat.getType(), e);
         }
     }
 
     private void deleteAllRelationsBetweenChatAndUsers(Chat chat) {
         String query = "DELETE FROM users_chats WHERE chat_id = ?;";
-        try (Connection connection = ConnectionUtil.getConnection(); PreparedStatement statement = connection.prepareStatement(query)) {
+        try (Connection connection = ConnectionUtil.getConnection();
+                PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setLong(1, chat.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new DataProcessingException("Couldn't delete users from chat. Chat: " + chat.getType(), e);
+            throw new DataProcessingException("Couldn't delete users from chat. Chat: "
+                    + chat.getType(), e);
         }
     }
 
